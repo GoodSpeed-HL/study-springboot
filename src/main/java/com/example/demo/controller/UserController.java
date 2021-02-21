@@ -1,10 +1,12 @@
 package com.example.demo.controller;
 
 
+import ca.bitcoco.jsk.http.HttpResponseBody;
 import com.example.demo.domain.User;
 import com.example.demo.dtos.UserDto;
 import com.example.demo.repo.UserRepo;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
+
 
 @RestController
 
@@ -29,7 +33,7 @@ public class UserController {
     }
 
     @PostMapping("/api/auth/register")
-    public ResponseEntity<User> createOne(@Valid @RequestBody UserDto request, Error error) {
+    public ResponseEntity<User> createOne(@Valid @RequestBody UserDto request, Error error, @PathParam("page") Integer page) {
         User user = mapper.map(request, User.class);
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         user.setPassword(encoder.encode(user.getPassword()));
@@ -49,10 +53,13 @@ public class UserController {
 
     @GetMapping("/users")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Object> getAll(Authentication auth) {
-
-        System.out.println("test");
-        return ResponseEntity.ok(auth.getPrincipal());
+    public ResponseEntity<HttpResponseBody> getAll(Authentication auth, Pageable pageable) {
+        try{
+            return new ResponseEntity<>(HttpResponseBody.result(repo.findAll(pageable)), HttpStatus.OK);
+        }
+        catch (Exception ex){
+            return null;
+        }
     }
 
     @GetMapping("/users/one")

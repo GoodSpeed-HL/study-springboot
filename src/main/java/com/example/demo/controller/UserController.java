@@ -5,6 +5,7 @@ import ca.bitcoco.jsk.http.HttpResponseBody;
 import com.example.demo.domain.*;
 import com.example.demo.dtos.UserDto;
 import com.example.demo.repo.*;
+import com.example.demo.service.CourseService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
+import java.util.UUID;
 
 
 @RestController
@@ -30,7 +32,9 @@ public class UserController {
     private final CourseRepo courseRepo;
     private final LessonRepo lessonRepo;
 
-    public UserController(UserRepo repo, HomeworkRepo homeworkRepo, ProjectRepo projectRepo, LessonHomeworkRepo lessonHomeworkRepo, CourseRepo courseRepo, LessonRepo lessonRepo) {
+    private final CourseService courseService;
+
+    public UserController(UserRepo repo, HomeworkRepo homeworkRepo, ProjectRepo projectRepo, LessonHomeworkRepo lessonHomeworkRepo, CourseRepo courseRepo, LessonRepo lessonRepo, CourseService courseService) {
         this.repo = repo;
         this.homeworkRepo = homeworkRepo;
         this.projectRepo = projectRepo;
@@ -38,6 +42,7 @@ public class UserController {
 
         this.courseRepo = courseRepo;
         this.lessonRepo = lessonRepo;
+        this.courseService = courseService;
     }
 
     @PostMapping("/api/auth/register")
@@ -114,6 +119,17 @@ public class UserController {
         Lesson lesson = lessonRepo.findById(2l).orElse(null);
         return ResponseEntity.ok(homeworkRepo.findAll());
     }
+
+    @GetMapping("/saveTest")
+    //@PreAuthorize("hasAnyRole('Admin')")
+    public ResponseEntity<Object> saveTest(Authentication auth) {
+        Course course = new Course();
+        course.setLabel("course " + UUID.randomUUID().toString());
+        courseService.save(course);
+        return ResponseEntity.ok(courseService.getList());
+    }
+
+
 }
 
 

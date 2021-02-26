@@ -5,12 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -18,21 +14,22 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Homework extends AbstractGeneral{
+@Table(indexes = {
+        @Index(name = "userId", columnList = "userId", unique = false)
+})
+public class HomeworkResult extends AbstractGeneral{
     @Column(name = "type", insertable = false, updatable = false)
     private String type;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id")
+    @JoinColumn(name = "homework_id")
     @JsonIgnore
-    private Course course;
-
-    private String label;
+    private Homework homework;
 
     private String description;
 
-    private Double weight;
+    private Double score;
 
-    private Double total;
+    private Long userId;
 
 }

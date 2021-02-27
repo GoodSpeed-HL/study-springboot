@@ -31,10 +31,14 @@ public class UserController {
     private final LessonHomeworkRepo lessonHomeworkRepo;
     private final CourseRepo courseRepo;
     private final LessonRepo lessonRepo;
-
+    private final HomeworkResultRepo homeworkResultRepo;
+    private final LessonHomeworkResultRepo lessonHomeworkResultRepo;
+    private final AssignmentHomeworkResultRepo assignmentHomeworkResultRepo;
+    private final ProjectHomeworkResultRepo projectHomeworkResultRepo;
     private final CourseService courseService;
 
-    public UserController(UserRepo repo, HomeworkRepo homeworkRepo, ProjectRepo projectRepo, LessonHomeworkRepo lessonHomeworkRepo, CourseRepo courseRepo, LessonRepo lessonRepo, CourseService courseService) {
+
+    public UserController(UserRepo repo, HomeworkRepo homeworkRepo, ProjectRepo projectRepo, LessonHomeworkRepo lessonHomeworkRepo, CourseRepo courseRepo, LessonRepo lessonRepo, HomeworkResultRepo homeworkResultRepo, LessonHomeworkResultRepo lessonHomeworkResultRepo, AssignmentHomeworkResultRepo assignmentHomeworkResultRepo, ProjectHomeworkResultRepo projectHomeworkResultRepo, CourseService courseService) {
         this.repo = repo;
         this.homeworkRepo = homeworkRepo;
         this.projectRepo = projectRepo;
@@ -42,7 +46,12 @@ public class UserController {
 
         this.courseRepo = courseRepo;
         this.lessonRepo = lessonRepo;
+        this.homeworkResultRepo = homeworkResultRepo;
+        this.lessonHomeworkResultRepo = lessonHomeworkResultRepo;
+        this.assignmentHomeworkResultRepo = assignmentHomeworkResultRepo;
+        this.projectHomeworkResultRepo = projectHomeworkResultRepo;
         this.courseService = courseService;
+
     }
 
     @PostMapping("/api/auth/register")
@@ -129,6 +138,47 @@ public class UserController {
         return ResponseEntity.ok(courseService.getList());
     }
 
+    @GetMapping("/getAllLessons")
+    //@PreAuthorize("hasAnyRole('Admin')")
+    public ResponseEntity<Object> getAllLessons(Authentication auth) {
+        return ResponseEntity.ok(lessonRepo.findAll());
+    }
+
+    @GetMapping("/saveHomeWorkResult")
+    //@PreAuthorize("hasAnyRole('Admin')")
+    public ResponseEntity<Object> saveHomeWorkResult(Authentication auth) {
+        Homework assignmentHomework = homeworkRepo.findById(3L).orElse(null);
+        Project projectHomework = projectRepo.findById(1L).orElse(null);
+        LessonHomework lessonHomework = lessonHomeworkRepo.findById(2L).orElse(null);
+        User user = repo.findById(35l).orElse(null);
+        User user1 = repo.findById(34l).orElse(null);
+
+        //save assignment result for user 35
+        AssignmentResult result = new AssignmentResult();
+        result.setScore(10d);
+        result.setUserId(user.getId());
+        result.setType("Assignment");
+        result.setHomework(assignmentHomework);
+        assignmentHomeworkResultRepo.saveAndFlush(result);
+
+        //save project result for user 34
+        ProjectResult result1 = new ProjectResult();
+        result1.setScore(15d);
+        result1.setUserId(user1.getId());
+        result1.setType("Project");
+        result1.setHomework(projectHomework);
+        projectHomeworkResultRepo.saveAndFlush(result1);
+
+        //save lesson result for user 35
+        LessonHomeworkResult lessonHomeworkResult = new LessonHomeworkResult();
+        lessonHomeworkResult.setScore(20d);
+        lessonHomeworkResult.setType("Lesson");
+        lessonHomeworkResult.setUserId(user.getId());
+        lessonHomeworkResult.setHomework(lessonHomework);
+        lessonHomeworkResultRepo.saveAndFlush(lessonHomeworkResult);
+
+        return ResponseEntity.ok(homeworkResultRepo.findByUserId(34l));
+    }
 
 }
 

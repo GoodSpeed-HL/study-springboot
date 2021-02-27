@@ -14,10 +14,13 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(indexes = {
-        @Index(name = "userId", columnList = "userId", unique = false)
-})
-public class HomeworkResult extends AbstractGeneral{
+@Table(
+        name = "homework_result",
+        indexes = {
+                @Index(name = "userId", columnList = "userId, homework_id", unique = true)
+        }
+)
+public class HomeworkResult extends AbstractGeneral {
     @Column(name = "type", insertable = false, updatable = false)
     private String type;
 

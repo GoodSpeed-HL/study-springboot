@@ -3,7 +3,8 @@ package com.example.demo.domain;
 
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.*;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 
 @Entity
 @DiscriminatorValue(value = "Lesson")

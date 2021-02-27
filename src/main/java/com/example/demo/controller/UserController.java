@@ -13,7 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.websocket.server.PathParam;
@@ -65,10 +68,9 @@ public class UserController {
     @GetMapping("/users")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<HttpResponseBody> getAll(Authentication auth, Pageable pageable) {
-        try{
+        try {
             return new ResponseEntity<>(HttpResponseBody.result(repo.findAll(pageable)), HttpStatus.OK);
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             return null;
         }
     }
@@ -78,7 +80,7 @@ public class UserController {
     public ResponseEntity<Object> getOne(Authentication auth) {
         ModelMapper mapper = new ModelMapper();
         User user1 = mapper.map(auth.getPrincipal(), User.class);
-        User user = (User)auth.getPrincipal();
+        User user = (User) auth.getPrincipal();
         System.out.println(user.getEmail());
         return ResponseEntity.ok(repo.findById(34L));
     }

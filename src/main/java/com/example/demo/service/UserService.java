@@ -17,7 +17,7 @@ public class UserService {
         this.userRepo = userRepo;
     }
 
-    public Optional<User> findByUsername(String s){
+    public Optional<User> findByUsername(String s) {
         return this.userRepo.findByUsername(s);
     }
 }

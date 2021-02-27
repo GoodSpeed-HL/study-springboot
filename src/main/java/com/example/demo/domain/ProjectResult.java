@@ -10,5 +10,5 @@ import javax.persistence.Entity;
 @DiscriminatorValue(value = "Project")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public class ProjectResult extends HomeworkResult {
-    
+
 }

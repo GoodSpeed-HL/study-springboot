@@ -22,9 +22,9 @@ import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 import static com.example.demo.security.SecurityConstants.*;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager){
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
         this.setFilterProcessesUrl("/auth/login");
     }
@@ -32,23 +32,22 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        try{
-           User user = new ObjectMapper().readValue(request.getInputStream(), User.class);
-           return this.authenticationManager.authenticate(
+        try {
+            User user = new ObjectMapper().readValue(request.getInputStream(), User.class);
+            return this.authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             user.getUsername(),
                             user.getPassword(),
                             new ArrayList<>())
             );
-        }
-        catch (IOException exception){
+        } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication auth) throws IOException, ServletException {
-        UserDetails user = (UserDetails)auth.getPrincipal();
+        UserDetails user = (UserDetails) auth.getPrincipal();
         String token = JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))

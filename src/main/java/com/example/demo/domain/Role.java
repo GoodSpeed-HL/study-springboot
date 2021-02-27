@@ -11,12 +11,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="roles")
+@Table(name = "roles")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Role extends AbstractGeneral{
+public class Role extends AbstractGeneral {
     @Enumerated(EnumType.STRING)
     private RoleType label;
 }

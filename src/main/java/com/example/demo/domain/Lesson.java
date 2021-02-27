@@ -1,7 +1,10 @@
 package com.example.demo.domain;
 
-import com.fasterxml.jackson.annotation.*;
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -19,7 +22,7 @@ public class Lesson extends AbstractGeneral {
     @JsonIgnore
     private Course course;
 
-    @Column(name = "course_id", insertable=false, updatable=false)
+    @Column(name = "course_id", insertable = false, updatable = false)
     private Long courseId;
 
     @OneToMany(mappedBy = "lesson")
